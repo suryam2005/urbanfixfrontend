@@ -3,80 +3,195 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>UrbanFix - Voice Your Concerns</title>
+  <title>UrbanFix - Your Voice Matters</title>
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background-color: #f0f2f5;
-      text-align: center;
+      font-family: 'Inter', sans-serif;
       margin: 0;
       padding: 0;
+      background: linear-gradient(135deg, #a8c0ff, #3f2b96); /* Gradient background */
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
     }
+
     .container {
-      max-width: 800px;
-      margin: auto;
-      padding: 20px;
+      width: 90%;
+      max-width: 900px; /* Increased max-width for larger screens */
+      margin: 40px auto;
+      padding: 30px;
+      background: rgba(255, 255, 255, 0.1); /* Semi-transparent white background */
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(10px); /* Blur effect */
     }
+
     h1 {
-      color: #1da1f2;
-      font-size: 2.5rem;
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 15px;
+      text-align: center;
     }
+
     p {
-      color: #333;
-      font-size: 1.2rem;
+      font-size: 1rem;
+      line-height: 1.6;
+      margin-bottom: 30px;
+      text-align: center;
+      color: #eee; /* Lighter text color */
     }
+
     .features {
       display: flex;
-      justify-content: space-around;
-      margin: 20px 0;
+      flex-wrap: wrap; /* Allow wrapping on smaller screens */
+      justify-content: center;
+      gap: 20px;
     }
+
     .feature-box {
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-      width: 30%;
+      background: rgba(255, 255, 255, 0.2); /* Semi-transparent background */
+      padding: 25px;
+      border-radius: 8px;
+      flex: 1 1 280px; /* Adjust flex-basis for responsiveness */
+      text-align: center;
+      transition: transform 0.2s ease-in-out;
     }
+
+    .feature-box:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .feature-box i {
+      font-size: 1.8rem;
+      color: #1da1f2; /* Twitter blue */
+      margin-bottom: 15px;
+    }
+    .feature-box h3 {
+        font-size: 1.2rem;
+        margin-bottom: 10px;
+    }
+
     .cta {
-      margin-top: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+      margin-top: 30px;
     }
+
     .cta button {
-      background-color: #1da1f2;
+      background: linear-gradient(135deg, #1da1f2, #0d8ae5); /* Gradient buttons */
       color: white;
-      font-size: 1.2rem;
-      padding: 10px 20px;
+      font-size: 1rem;
+      padding: 12px 24px;
       border: none;
-      border-radius: 5px;
+      border-radius: 8px;
       cursor: pointer;
-      transition: background-color 0.3s;
+      transition: all 0.2s ease-in-out;
+      width: 100%;
+      max-width: 300px;
     }
+
     .cta button:hover {
-      background-color: #0d8ae5;
+      background: linear-gradient(135deg, #0d8ae5, #1da1f2);
+      transform: scale(1.02);
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     }
+
+    .admin-login {
+      font-size: 0.9rem;
+      color: #1da1f2;
+      text-decoration: none;
+      margin-top: 15px;
+      display: block;
+      text-align: center;
+    }
+
+    .admin-login:hover {
+      text-decoration: underline;
+    }
+    .hero-image {
+      width: 80%;
+      max-width: 300px;
+      margin: 20px auto;
+      display: block;
+    }
+
+    /* Media query for larger screens (laptops) */
+    @media (min-width: 768px) {
+      .features {
+        flex-direction: row; /* Features in a row */
+      }
+      .feature-box {
+        flex: 1 1 30%; /* Adjust flex-basis for larger screens */
+      }
+      .container {
+        max-width: 900px; /* Increased max-width */
+      }
+        h1 {
+            font-size: 2.5rem;
+        }
+        p {
+            font-size: 1.1rem;
+        }
+        .feature-box i {
+            font-size: 2rem;
+        }
+        .feature-box h3 {
+            font-size: 1.3rem;
+        }
+    }
+
+    .logo-text { /* New style for the logo text */
+      font-family: 'Helvetica Neue', sans-serif; /* Use Helvetica Neue or a similar font */
+      font-weight: bold;
+      font-size: 2.5rem; /* Adjust size as needed */
+      color: #fff; /* Or any color you prefer */
+      text-align: center;
+      margin-bottom: 20px; /* Add some spacing below the logo */
+    }
+
+    @media (min-width: 768px) {
+        .logo-text {
+            font-size: 3rem;
+        }
+    }
+
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>UrbanFix - Your Voice Matters</h1>
-    <p>A social platform for college students to report issues, raise awareness, and drive change.</p>
-    
+    <div class="logo-text">UrbanFix</div> <p>Empowering college students to report issues, raise awareness, and drive positive change within their community.</p>
+
     <div class="features">
       <div class="feature-box">
+        <i class="fas fa-bullhorn"></i>
         <h3>Public Complaints</h3>
-        <p>Raise awareness by sharing issues with the community.</p>
+        <p>Share issues openly with the community.</p>
       </div>
       <div class="feature-box">
+        <i class="fas fa-user-shield"></i>
         <h3>Private Reports</h3>
-        <p>Directly report concerns to college authorities.</p>
+        <p>Report sensitive concerns directly.</p>
       </div>
       <div class="feature-box">
+        <i class="fas fa-thumbs-up"></i>
         <h3>Upvotes & Engagement</h3>
-        <p>Support pressing issues by upvoting complaints.</p>
+        <p>Support important issues.</p>
       </div>
     </div>
-    
+
     <div class="cta">
-      <button onclick="location.href='login.html'">Get Started</button>
+      <button onclick="location.href='login.html#signupbtn'">Get Started</button>
+      <button onclick="location.href='login.html'">Login</button>
+      <a href="admin-login.html" class="admin-login">Admin Login</a>
     </div>
   </div>
 </body>
