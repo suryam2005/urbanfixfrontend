@@ -161,10 +161,7 @@
     headers: {
         'Content-Type': 'application/json',
         'Authorization': token },
-    body: JSON.stringify({
-        title: 'Complaint title',
-        description: 'Complaint description',
-    })
+        body: JSON.stringify({ title, description })
 })
 
       if (!response.ok) {
