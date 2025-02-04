@@ -108,27 +108,37 @@
     window.location.href = 'login.html';
   }
 
+  // Fetch profile information
   fetch(`${backendUrl}/profile`, {
     method: 'GET',
     headers: { 'Authorization': token },
   })
-    .then(response => response.json())
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Session expired');
+      }
+      return response.json();
+    })
     .then(data => {
       if (data.email) {
         emailElement.textContent = data.email;
       } else {
-        alert('Session expired. Redirecting to login.');
-        window.location.href = 'login.html';
+        throw new Error('Session expired');
       }
     })
     .catch(() => window.location.href = 'login.html');
 
+  // Fetch complaints
   const fetchComplaints = async () => {
     try {
       const response = await fetch(`${backendUrl}/complaints`, {
         method: 'GET',
         headers: { 'Authorization': token }
       });
+
+      if (!response.ok) {
+        throw new Error('Failed to load complaints');
+      }
 
       const data = await response.json();
       complaintsList.innerHTML = data.complaints.length > 0 ? 
@@ -138,13 +148,14 @@
             <p>${complaint.description}</p>
           </div>`
         ).join('') : 'No complaints found.';
-    } catch {
+    } catch (error) {
       complaintsList.innerHTML = 'Failed to load complaints.';
     }
   };
 
   fetchComplaints();
 
+  // Handle complaint form submission
   complaintForm.addEventListener('submit', async (event) => {
     event.preventDefault();
     const title = document.getElementById('title').value.trim();
@@ -156,27 +167,34 @@
     }
 
     try {
-      const response = await fetch('https://urbanfixbackend.vercel.app/submit', {
-    method: 'POST',
-    headers: {
-        'Content-Type': 'application/json',
-        'Authorization': token },
+      const response = await fetch(`${backendUrl}/submit`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token
+        },
         body: JSON.stringify({ title, description })
-})
+      });
 
       if (!response.ok) {
         throw new Error('Failed to submit complaint');
       }
-      fetchComplaints();
+      
+      // Clear form after submission
+      document.getElementById('title').value = '';
+      document.getElementById('description').value = '';
+
+      fetchComplaints(); // Reload complaints after successful submission
     } catch (error) {
       alert('Failed to submit complaint. Please try again.');
     }
   });
 
+  // Logout user
   logoutButton.addEventListener('click', () => {
     localStorage.removeItem('token');
     window.location.href = 'login.html';
   });
-  </script>
+</script>
 </body>
 </html>
