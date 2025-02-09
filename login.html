@@ -166,7 +166,7 @@
     });
 
     // Backend interaction
-    const backendUrl = 'https://urbanfixbackend.vercel.app'; // Change this to your server's address
+    const backendUrl = 'http://localhost:3000'; // Change this to your server's address
 
     // Login form submission
 loginForm.addEventListener('submit', async (e) => {
@@ -189,7 +189,7 @@ loginForm.addEventListener('submit', async (e) => {
 
       // Check if the redirection happens properly
       console.log("Redirecting to profile...");
-      window.location.href = 'profile.html'; 
+      window.location.href = 'homepage.html'; // Redirect after login
     } else {
       alert(data.message || 'Login failed.');
     }

@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UrbanFix - Home</title>
+  <style>
+    :root {
+      --primary-color: #2563eb;
+      --secondary-color: #1e40af;
+      --danger-color: #ef4444;
+      --background-color: #f8fafc;
+      --card-background: #ffffff;
+      --text-primary: #1e293b;
+      --text-secondary: #64748b;
+      --border-radius: 12px;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+      --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--background-color);
+      color: var(--text-primary);
+      line-height: 1.5;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .header {
+      background: var(--card-background);
+      padding: 1rem 2rem;
+      box-shadow: var(--shadow-sm);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .header h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .menu-icon {
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--text-secondary);
+      display: none;
+    }
+
+    .filter-section {
+      margin: 1rem 0;
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .filter-button {
+      padding: 0.5rem 1rem;
+      border: 1px solid var(--primary-color);
+      border-radius: var(--border-radius);
+      background: transparent;
+      color: var(--primary-color);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .filter-button.active {
+      background: var(--primary-color);
+      color: white;
+    }
+
+    #logout-btn {
+      background: var(--danger-color);
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      font-size: 0.875rem;
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    #logout-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .complaint-button {
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 1rem 2rem;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      transition: all 0.2s;
+      width: 100%;
+      margin: 2rem 0;
+    }
+
+    .complaint-button:hover {
+      background: var(--secondary-color);
+      transform: translateY(-2px);
+    }
+
+    .complaint-feed {
+      display: grid;
+      gap: 1.5rem;
+    }
+
+    .complaint {
+      background: var(--card-background);
+      padding: 1.5rem;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow-md);
+      transition: transform 0.2s;
+    }
+
+    .complaint:hover {
+      transform: translateY(-2px);
+    }
+
+    .complaint-content {
+      margin-bottom: 1rem;
+    }
+
+    .complaint-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .complaint-description {
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
+    }
+
+    .complaint-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .tag {
+      background: #e2e8f0;
+      color: var(--text-secondary);
+      padding: 0.25rem 0.75rem;
+      border-radius: 999px;
+      font-size: 0.875rem;
+    }
+
+    .upvote-container {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .upvote-btn {
+      background: transparent;
+      border: 1px solid var(--primary-color);
+      color: var(--primary-color);
+      padding: 0.5rem;
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .upvote-btn:hover {
+      background: var(--primary-color);
+      color: white;
+    }
+
+    .popup {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(4px);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .popup-content {
+      background: var(--card-background);
+      padding: 2rem;
+      border-radius: var(--border-radius);
+      width: 90%;
+      max-width: 600px;
+      box-shadow: var(--shadow-md);
+    }
+
+    .popup h2 {
+      margin-bottom: 1.5rem;
+      font-size: 1.5rem;
+      color: var(--text-primary);
+    }
+
+    .popup input, .popup textarea {
+      width: 100%;
+      padding: 0.75rem;
+      margin-bottom: 1rem;
+      border: 1px solid #e2e8f0;
+      border-radius: var(--border-radius);
+      font-size: 1rem;
+      transition: border-color 0.2s;
+    }
+
+    .popup input:focus, .popup textarea:focus {
+      outline: none;
+      border-color: var(--primary-color);
+    }
+
+    .tags-input-container {
+      margin-bottom: 1rem;
+    }
+
+    .tags-checkbox-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .tag-checkbox {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .tag-checkbox input[type="checkbox"] {
+      width: auto;
+      margin: 0;
+    }
+
+    .tag-checkbox label {
+      color: var(--text-primary);
+      font-size: 0.875rem;
+    }
+
+    .popup-buttons {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .popup-buttons button {
+      flex: 1;
+      padding: 0.75rem;
+      border: none;
+      border-radius: var(--border-radius);
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .popup-buttons button:first-child {
+      background: var(--primary-color);
+      color: white;
+    }
+
+    .popup-buttons button:last-child {
+      background: #e2e8f0;
+      color: var(--text-secondary);
+    }
+
+    @media (min-width: 768px) {
+      .complaint-feed {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 767px) {
+      .header {
+        padding: 1rem;
+      }
+
+      .menu-icon {
+        display: block;
+      }
+
+      .popup-content {
+        width: 95%;
+        padding: 1.5rem;
+      }
+
+      .popup-buttons {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <span class="menu-icon">☰</span>
+      <h1>UrbanFix</h1>
+      <button id="logout-btn">Logout</button>
+    </div>
+
+    <button class="complaint-button" onclick="showPopup()">New Complaint</button>
+
+    <div class="filter-section">
+      <button class="filter-button active" onclick="filterComplaints('all')">All</button>
+      <button class="filter-button" onclick="filterComplaints('electricity')">Electricity</button>
+      <button class="filter-button" onclick="filterComplaints('canteen')">Canteen</button>
+      <button class="filter-button" onclick="filterComplaints('furniture')">Furniture</button>
+      <button class="filter-button" onclick="filterComplaints('campus')">Campus</button>
+    </div>
+
+    <div id="complaint-feed" class="complaint-feed">
+      <p>Loading complaints...</p>
+    </div>
+  </div>
+
+  <div id="popup" class="popup">
+    <div class="popup-content">
+      <h2>Submit Complaint</h2>
+      <input type="text" id="title" placeholder="Complaint Title">
+      <textarea id="description" rows="4" placeholder="Complaint Description"></textarea>
+      
+      <div class="tags-input-container">
+        <label>Select Categories:</label>
+        <div class="tags-checkbox-group">
+          <div class="tag-checkbox">
+            <input type="checkbox" id="tag-electricity" value="electricity">
+            <label for="tag-electricity">Electricity</label>
+          </div>
+          <div class="tag-checkbox">
+            <input type="checkbox" id="tag-canteen" value="canteen">
+            <label for="tag-canteen">Canteen</label>
+          </div>
+          <div class="tag-checkbox">
+            <input type="checkbox" id="tag-furniture" value="furniture">
+            <label for="tag-furniture">Furniture</label>
+          </div>
+          <div class="tag-checkbox">
+            <input type="checkbox" id="tag-campus" value="campus">
+            <label for="tag-campus">Campus</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="popup-buttons">
+        <button onclick="submitComplaint()">Submit</button>
+        <button onclick="hidePopup()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const backendUrl = 'http://localhost:3000';
+    const token = localStorage.getItem('token');
+    let allComplaints = [];
+    let currentFilter = 'all';
+
+    if (!token) {
+      window.location.href = 'login.html';
+    }
+
+    function getSelectedTags() {
+      const checkboxes = document.querySelectorAll('.tag-checkbox input[type="checkbox"]');
+      return Array.from(checkboxes)
+        .filter(checkbox => checkbox.checked)
+        .map(checkbox => checkbox.value);
+    }
+
+    function showPopup() {
+      document.getElementById('popup').style.display = 'flex';
+      // Reset form
+      document.getElementById('title').value = '';
+      document.getElementById('description').value = '';
+      document.querySelectorAll('.tag-checkbox input[type="checkbox"]').forEach(checkbox => {
+        checkbox.checked = false;
+      });
+    }
+
+    function hidePopup() {
+      document.getElementById('popup').style.display = 'none';
+    }
+
+    function filterComplaints(tag) {
+      currentFilter = tag;
+      
+      // Update active filter button
+      document.querySelectorAll('.filter-button').forEach(button => {
+        button.classList.remove('active');
+        if (button.textContent.toLowerCase().includes(tag.toLowerCase())) {
+          button.classList.add('active');
+        }
+      });
+
+      // Filter and display complaints
+      const filteredComplaints = tag === 'all' 
+        ? allComplaints 
+        : allComplaints.filter(complaint => complaint.tags.includes(tag));
+      
+      displayComplaints(filteredComplaints);
+    }
+
+    function displayComplaints(complaints) {
+      const complaintsList = document.getElementById('complaint-feed');
+      
+      if (complaints.length === 0) {
+        complaintsList.innerHTML = '<p>No complaints found.</p>';
+        return;
+      }
+
+      complaintsList.innerHTML = complaints.map(complaint => `
+        <div class="complaint">
+          <div class="complaint-content">
+            <h3 class="complaint-title">${complaint.title}</h3>
+            <p class="complaint-description">${complaint.description}</p>
+            <div class="complaint-tags">
+              ${(complaint.tags || []).map(tag => `
+                <span class="tag">${tag}</span>
+              `).join('')}
+            </div>
+          </div>
+          <div class="upvote-container">
+            <button class="upvote-btn" onclick="upvoteComplaint('${complaint.id}')">▲</button>
+            <span id="upvotes-${complaint.id}">${complaint.upvotes || 0}</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    async function fetchComplaints() {
+      const complaintsList = document.getElementById('complaint-feed');
+      complaintsList.innerHTML = '<p>Loading complaints...</p>';
+
+      try {
+        const response = await fetch(`${backendUrl}/complaints`, {
+          method: 'GET',
+          headers: { 'Authorization': token }
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to load complaints');
+        }
+
+        const data = await response.json();
+        allComplaints = data.complaints.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+        filterComplaints(currentFilter);
+      } catch (error) {
+        complaintsList.innerHTML = '<p>Failed to load complaints.</p>';
+      }
+    }
+
+    async function submitComplaint() {
+      const title = document.getElementById('title').value.trim();
+      const description = document.getElementById('description').value.trim();
+      const selectedTags = getSelectedTags();
+
+      if (!title || !description) {
+        alert('Title and description are required.');
+        return;
+      }
+
+      if (selectedTags.length === 0) {
+        alert('Please select at least one category.');
+        return;
+      }
+
+      try {
+        const response = await fetch(`${backendUrl}/submit`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': token
+          },body: JSON.stringify({ 
+            title, 
+            description,
+            tags: selectedTags
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to submit complaint');
+        }
+        
+        hidePopup();
+        fetchComplaints();
+      } catch (error) {
+        alert('Failed to submit complaint. Please try again.');
+      }
+    }
+
+    async function upvoteComplaint(complaintId) {
+  try {
+    const response = await fetch(`${backendUrl}/complaints/${complaintId}/upvote`, {
+      method: 'POST',
+      headers: { 
+        'Authorization': token,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to upvote');
+    }
+
+    const updatedComplaint = await response.json();
+    
+    // Update the display
+    document.getElementById(`upvotes-${complaintId}`).textContent = updatedComplaint.upvotes;
+  } catch (error) {
+    showError('Failed to upvote complaint.');
+  }
+}
+    // Handle logout
+    document.getElementById('logout-btn').addEventListener('click', () => {
+      localStorage.removeItem('token');
+      window.location.href = 'login.html';
+    });
+
+    // Close popup when clicking outside
+    document.getElementById('popup').addEventListener('click', (e) => {
+      if (e.target.className === 'popup') {
+        hidePopup();
+      }
+    });
+
+    // Handle escape key to close popup
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && document.getElementById('popup').style.display === 'flex') {
+        hidePopup();
+      }
+    });
+
+    // Initialize complaints on page load
+    fetchComplaints();
+
+    // Optional: Add keyboard shortcut for new complaint
+    document.addEventListener('keydown', (e) => {
+      if (e.ctrlKey && e.key === 'n') {
+        e.preventDefault();
+        showPopup();
+      }
+    });
+
+    // Handle filter button keyboard navigation
+    document.querySelectorAll('.filter-button').forEach(button => {
+      button.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          button.click();
+        }
+      });
+    });
+
+    // Add loading state to submit button
+    async function setSubmitLoading(isLoading) {
+      const submitButton = document.querySelector('.popup-buttons button:first-child');
+      submitButton.disabled = isLoading;
+      submitButton.textContent = isLoading ? 'Submitting...' : 'Submit';
+    }
+
+    // Enhanced error handling
+    function showError(message) {
+      const errorDiv = document.createElement('div');
+      errorDiv.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: var(--danger-color);
+        color: white;
+        padding: 1rem;
+        border-radius: var(--border-radius);
+        z-index: 2000;
+        animation: slideIn 0.3s ease-out;
+      `;
+      errorDiv.textContent = message;
+      document.body.appendChild(errorDiv);
+      
+      setTimeout(() => {
+        errorDiv.style.animation = 'slideOut 0.3s ease-out';
+        setTimeout(() => errorDiv.remove(), 300);
+      }, 3000);
+    }
+
+    // Add these CSS animations to your style section
+    const styleSheet = document.createElement('style');
+    styleSheet.textContent = `
+      @keyframes slideIn {
+        from { transform: translateX(100%); }
+        to { transform: translateX(0); }
+      }
+      
+      @keyframes slideOut {
+        from { transform: translateX(0); }
+        to { transform: translateX(100%); }
+      }
+    `;
+    document.head.appendChild(styleSheet);
+  </script>
+</body>
+</html>
