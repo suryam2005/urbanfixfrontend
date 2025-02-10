@@ -307,7 +307,7 @@
         const data = await response.json();
         if (response.ok) {
           localStorage.setItem('token', data.token);
-          window.location.href = endpoint === 'login' ? 'homepage.html' : 'profile.html';
+          window.location.href = 'homepage.html' ;
         } else {
           throw new Error(data.message || `${endpoint} failed`);
         }
