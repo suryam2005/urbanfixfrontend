@@ -1,4 +1,4 @@
-const backendUrl = 'http://localhost:3000';
+const backendUrl = 'https://urbanfixbackend.vercel.app';
 const token = localStorage.getItem('token');
 
 // Redirect if not logged in

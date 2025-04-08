@@ -1,5 +1,5 @@
 // Profile page JavaScript
-const backendUrl = 'http://localhost:3000'; // Update with your backend URL
+const backendUrl = 'https://urbanfixbackend.vercel.app'; // Update with your backend URL
 const token = localStorage.getItem('token');
 
 // Redirect if not logged in
