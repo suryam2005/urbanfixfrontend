@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UrbanFix - Complaint Tracking</title>
+    <link rel="stylesheet" href="styles/pro.css">
+  <style>
+    /* Base Styles with Updated Brand Colors */
+    :root {
+      --primary-color: #0071e3;
+      --secondary-color: #86868b;
+      --background-color: #f5f5f7;
+      --card-background: #ffffff;
+      --text-primary: #1d1d1f;
+      --text-secondary: #86868b;
+      --sidebar-width: 270px;
+      --header-height: 60px;
+      --border-radius: 16px;
+      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
+      --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.08);
+      --primary-hover: #0062c1;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+    }
+    
+    body {
+      background-color: var(--background-color);
+      color: var(--text-primary);
+      min-height: 100vh;
+    }
+    
+    .layout {
+      display: flex;
+      min-height: 100vh;
+    }
+    
+  /* Sidebar Navigation */
+  .sidebar {
+    position: fixed;
+    width: var(--sidebar-width);
+    height: 100vh;
+    background: var(--card-background);
+    padding: 2rem 1rem;
+    border-right: 1px solid rgba(0, 0, 0, 0.06);
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    z-index: 100;
+  }
+  
+  .nav-brand {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--primary-color);
+    padding: 0 1rem;
+    margin-bottom: 1rem;
+  }
+  
+  .nav-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.875rem 1rem;
+    color: var(--text-primary);
+    text-decoration: none;
+    border-radius: 10px;
+    transition: all 0.2s ease;
+  }
+  
+  .nav-link:hover {
+    background-color: rgba(0, 0, 0, 0.04);
+  }
+  
+  .nav-link.active {
+    background-color: rgba(0, 113, 227, 0.1);
+    color: var(--primary-color);
+  }
+  
+  
+  /* Main Content */
+  .main-content {
+    flex: 1;
+    margin-left: var(--sidebar-width);
+    padding: 3rem;
+  }
+    
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .page-title {
+      font-size: 1.75rem;
+      font-weight: 600;
+      margin-bottom: 2rem;
+      color: var(--text-primary);
+    }
+    
+    /* Complaints List */
+    .complaints-list {
+      background: var(--card-background);
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      box-shadow: var(--shadow-md);
+    }
+    
+    .complaints-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    
+    .list-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    
+    .search-box {
+      display: flex;
+      background: var(--background-color);
+      border-radius: 8px;
+      padding: 8px 16px;
+      width: 250px;
+    }
+    
+    .search-box input {
+      border: none;
+      background: transparent;
+      outline: none;
+      width: 100%;
+      font-size: 14px;
+      color: var(--text-primary);
+    }
+
+    .complaint-card {
+      display: flex;
+      padding: 1rem;
+      border-bottom: 1px solid #eee;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    
+    .complaint-card:hover {
+      background-color: rgba(0, 0, 0, 0.02);
+    }
+    
+    .complaint-card:last-child {
+      border-bottom: none;
+    }
+    
+    .complaint-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(0, 113, 227, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 1rem;
+      color: var(--primary-color);
+    }
+    
+    .complaint-details {
+      flex: 1;
+    }
+    
+    .complaint-title {
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+      color: var(--text-primary);
+    }
+    
+    .complaint-status {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+    }
+    
+    .complaint-location {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      margin-top: 0.5rem;
+    }
+    
+    .complaint-date {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      text-align: right;
+    }
+    
+    /* Status Badge */
+    .status-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+    
+    .status-pending {
+      background-color: #fff3e0;
+      color: #ff9800;
+    }
+    
+    .status-working {
+      background-color: #e3f2fd;
+      color: #2196f3;
+    }
+    
+    .status-finished {
+      background-color: #e8f5e9;
+      color: #4caf50;
+    }
+
+    /* Loading Indicator */
+    .loading {
+      text-align: center;
+      padding: 2rem;
+      color: var(--text-secondary);
+    }
+
+    .loading-spinner {
+      width: 40px;
+      height: 40px;
+      margin: 0 auto;
+      border: 3px solid rgba(0, 113, 227, 0.1);
+      border-radius: 50%;
+      border-top: 3px solid var(--primary-color);
+      animation: spin 1s linear infinite;
+    }
+
+    .loading-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Error Message */
+    .error-message {
+      text-align: center;
+      padding: 2rem;
+      color: #f44336;
+      background-color: #ffebee;
+      border-radius: 8px;
+      margin: 1rem 0;
+    }
+    
+    /* Toast Container */
+    #toastContainer {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 2000;
+    }
+
+    .toast {
+      background-color: #323232;
+      color: white;
+      padding: 12px 24px;
+      border-radius: 4px;
+      margin-bottom: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+      opacity: 1;
+      transition: opacity 0.3s ease;
+    }
+
+    .toast.error {
+      background-color: #d32f2f;
+    }
+    
+    /* Mobile Header */
+    .mobile-header {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem;
+      background-color: var(--card-background);
+      box-shadow: var(--shadow-sm);
+    }
+    
+    .menu-icon {
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+    
+    .nav-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 90;
+    }
+    
+    /* Responsive Styles */
+    @media (max-width: 768px) {
+      .sidebar {
+        transform: translateX(-280px);
+        transition: transform 0.3s ease;
+      }
+      
+      .sidebar.active {
+        transform: translateX(0);
+      }
+      
+      .main-content {
+        margin-left: 0;
+        padding: 1rem;
+      }
+      
+      .mobile-header {
+        display: flex;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+      }
+      
+      .nav-overlay.active {
+        display: block;
+      }
+      
+      .complaints-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+      }
+      
+      .search-box {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="layout">
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar" id="sidebar">
+      <div class="nav-brand">UrbanFix</div>
+      <div class="nav-links">
+        <a href="homepage.html" class="nav-link">
+          <span>🏠</span>
+          <span>Home</span>
+        </a>
+        <a href="profile.html" class="nav-link">
+          <span>👤</span>
+          <span>Profile</span>
+        </a>
+        <a href="complainttracking.html" class="nav-link active">
+          <span>📍</span>
+          <span>Complaint Tracking</span>
+        </a>
+        <a href="#" onclick="logout()" class="nav-link">
+          <span>🚪</span>
+          <span>Logout</span>
+        </a>
+      </div>
+    </nav>
+
+    <!-- Mobile Header -->
+    <header class="mobile-header">
+      <div class="menu-icon" onclick="toggleNav()">☰</div>
+      <div class="nav-brand">UrbanFix</div>
+    </header>
+
+    <!-- Nav Overlay -->
+    <div class="nav-overlay" id="navOverlay" onclick="toggleNav()"></div>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <div class="container">
+        <h1 class="page-title">Complaint Tracking</h1>
+
+        <div class="complaints-list">
+          <div class="complaints-header">
+            <h2 class="list-title">Your Complaints</h2>
+            <div class="search-box">
+              <input type="text" placeholder="Search complaints..." id="search-input">
+            </div>
+          </div>
+
+          <div id="complaints-container">
+            <!-- Complaint cards will be loaded here -->
+            <div class="loading-container">
+              <div class="loading-spinner"></div>
+              <p style="margin-top: 1rem; color: var(--text-secondary);">Loading complaints...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // Configuration and constants
+    const backendUrl = 'http://localhost:3000';
+    const token = localStorage.getItem('token');
+    
+    // DOM elements
+    const complaintsContainer = document.getElementById('complaints-container');
+    const sidebar = document.getElementById('sidebar');
+    const navOverlay = document.getElementById('navOverlay');
+    
+    // Global variables
+    let toastTimeout = null;
+    
+    // Redirect if not logged in
+    if (!token) {
+      window.location.href = 'login.html';
+    }
+    
+    // Toast notification function
+    function showToast(message, isError = false) {
+      // Clear any existing toast timeout
+      if (toastTimeout) {
+        clearTimeout(toastTimeout);
+      }
+      
+      const container = document.getElementById('toastContainer') || createToastContainer();
+      
+      // Remove existing toasts
+      while (container.firstChild) {
+        container.removeChild(container.firstChild);
+      }
+      
+      const toast = document.createElement('div');
+      toast.className = `toast ${isError ? 'error' : ''}`;
+      toast.textContent = message;
+      
+      container.appendChild(toast);
+
+      // Remove toast after animation
+      toastTimeout = setTimeout(() => {
+        toast.style.opacity = '0';
+        setTimeout(() => {
+          toast.remove();
+        }, 300);
+      }, 3000);
+    }
+
+    function createToastContainer() {
+      const container = document.createElement('div');
+      container.id = 'toastContainer';
+      document.body.appendChild(container);
+      return container;
+    }
+    
+    // Toggle sidebar navigation
+    function toggleNav() {
+      sidebar.classList.toggle('active');
+      navOverlay.classList.toggle('active');
+      document.body.style.overflow = sidebar.classList.contains('active') ? 'hidden' : '';
+    }
+    
+    // Function to open complaint details
+    function openComplaintDetails(id) {
+      window.location.href = `complaint-details.html?id=${id}`;
+    }
+    
+    // Logout function
+    function logout() {
+      localStorage.removeItem('token');
+      window.location.href = 'login.html';
+    }
+    
+    // Format date function
+    function formatDate(dateString) {
+      const date = new Date(dateString);
+      const options = { month: 'short', day: 'numeric', year: 'numeric' };
+      return date.toLocaleDateString('en-US', options);
+    }
+
+    // Get status badge class
+    function getStatusBadgeClass(status) {
+      switch (status.toLowerCase()) {
+        case 'submitted':
+          return 'status-pending';
+        case 'in progress':
+          return 'status-working';
+        case 'resolved':
+          return 'status-finished';
+        default:
+          return 'status-pending';
+      }
+    }
+
+    // Create complaint card
+    function createComplaintCard(complaint) {
+      return `
+        <div class="complaint-card" onclick="openComplaintDetails('${complaint.id}')">
+          <div class="complaint-icon">📊</div>
+          <div class="complaint-details">
+            <h3 class="complaint-title">${complaint.title}</h3>
+            <div class="complaint-status">
+              Status: <span class="status-badge ${getStatusBadgeClass(complaint.status)}">${complaint.status}</span>
+            </div>
+            <div class="complaint-location">📍 ${complaint.location || 'No location specified'}</div>
+          </div>
+          <div class="complaint-date">${formatDate(complaint.created_at || complaint.createdAt)}</div>
+        </div>
+      `;
+    }
+
+    // Fetch and render complaints
+    async function fetchComplaints() {
+      try {
+        complaintsContainer.innerHTML = `
+          <div class="loading-container">
+            <div class="loading-spinner"></div>
+            <p style="margin-top: 1rem; color: var(--text-secondary);">Loading complaints...</p>
+          </div>
+        `;
+        
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 10000);
+
+        const response = await fetch(`${backendUrl}/complaints`, {
+          headers: { 
+            'Authorization': token,
+            'Content-Type': 'application/json'
+          },
+          signal: controller.signal
+        });
+        
+        clearTimeout(timeoutId);
+        
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || 'Failed to load complaints');
+        }
+        
+        const data = await response.json();
+        const complaints = Array.isArray(data) ? data : data.complaints || [];
+        
+        if (complaints.length === 0) {
+          complaintsContainer.innerHTML = `
+            <div class="error-message" style="color: var(--text-secondary); background: transparent;">
+              You haven't submitted any complaints yet.
+            </div>
+          `;
+          return;
+        }
+        
+        // Sort complaints by date (most recent first)
+        const sortedComplaints = complaints.sort((a, b) => {
+          const dateA = new Date(a.created_at || a.createdAt);
+          const dateB = new Date(b.created_at || b.createdAt);
+          return dateB - dateA;
+        });
+        
+        let complaintsHTML = '';
+        sortedComplaints.forEach(complaint => {
+          complaintsHTML += createComplaintCard(complaint);
+        });
+        
+        complaintsContainer.innerHTML = complaintsHTML;
+        
+        // Initialize search functionality
+        initializeSearch();
+      } catch (error) {
+        console.error('Error fetching complaints:', error);
+        
+        const errorMessage = error.name === 'AbortError' 
+          ? 'Request timed out. Please try again.'
+          : error.message || 'Failed to load complaints. Please try again later.';
+
+        complaintsContainer.innerHTML = `
+          <div class="error-message">
+            <p>${errorMessage}</p>
+            <button 
+              onclick="fetchComplaints()"
+              style="
+                margin-top: 1.5rem;
+                padding: 0.75rem 1.5rem;
+                background: var(--primary-color);
+                color: white;
+                border: none;
+                border-radius: 8px;
+                cursor: pointer;
+                font-size: 0.875rem;
+                font-weight: 500;
+                transition: background-color 0.2s ease;
+              "
+              onmouseover="this.style.backgroundColor = 'var(--primary-hover)'"
+              onmouseout="this.style.backgroundColor = 'var(--primary-color)'"
+            >
+              Retry
+            </button>
+          </div>
+        `;
+      }
+    }
+    
+    // Initialize search functionality
+    function initializeSearch() {
+      const searchInput = document.getElementById('search-input');
+      if (searchInput) {
+        searchInput.addEventListener('input', function() {
+          const searchTerm = this.value.toLowerCase();
+          const cards = document.querySelectorAll('.complaint-card');
+          
+          cards.forEach(card => {
+            const title = card.querySelector('.complaint-title').textContent.toLowerCase();
+            const location = card.querySelector('.complaint-location').textContent.toLowerCase();
+            
+            if (title.includes(searchTerm) || location.includes(searchTerm)) {
+              card.style.display = 'flex';
+            } else {
+              card.style.display = 'none';
+            }
+          });
+        });
+      }
+    }
+    
+    // Load complaints when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+      // Check authentication
+      if (!token) {
+        window.location.href = 'login.html';
+        return;
+      }
+      
+      fetchComplaints().catch(error => {
+        console.error('Failed to load complaints:', error);
+        showToast('Failed to load complaints. Please try again.', true);
+      });
+    });
+  </script>
+</body>
+
+</html>

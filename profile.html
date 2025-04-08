@@ -3,198 +3,105 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>User Profile</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f0f2f5;
-      color: #333;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    .container {
-      max-width: 600px;
-      width: 100%;
-      padding: 20px;
-    }
-    h1, h2 {
-      text-align: center;
-      color: #1da1f2;
-    }
-    form {
-      background: #fff;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-      margin-bottom: 20px;
-    }
-    form input, form textarea, form button {
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-    }
-    form button {
-      background-color: #1da1f2;
-      color: white;
-      font-weight: bold;
-      border: none;
-      cursor: pointer;
-    }
-    form button:hover {
-      background-color: #0d8ae5;
-    }
-    .complaints {
-      background: #fff;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-      margin-bottom: 20px;
-    }
-    .complaints img {
-      margin-top: 10px;
-      border-radius: 10px;
-      max-width: 100%;
-    }
-    #logout-btn {
-      background-color: #ff4b5c;
-      color: white;
-      font-weight: bold;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    #logout-btn:hover {
-      background-color: #ff1f3f;
-    }
-  </style>
+  <title>UrbanFix - Profile</title>
+  <link rel="stylesheet" href="/styles/pro.css">
+  <link rel="stylesheet" href="/styles/hmpg.css">
 </head>
 <body>
-  <div class="container">
-    <h1>User Profile</h1>
-    <p>Email: <span id="email"></span></p>
+  <div class="layout">
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar" id="sidebar">
+      <div class="nav-brand">UrbanFix</div>
+      <div class="nav-links">
+        <a href="homepage.html" class="nav-link">
+          <span>🏠</span>
+          <span>Home</span>
+        </a>
+        <a href="profile.html" class="nav-link active">
+          <span>👤</span>
+          <span>Profile</span>
+        </a>
+        <a href="complainttracking.html" class="nav-link">
+          <span>📍</span>
+          <span>Complaint Tracking</span>
+        </a>
+        <a href="#" onclick="logout()" class="nav-link">
+          <span>🚪</span>
+          <span>Logout</span>
+        </a>
+      </div>
+    </nav>
 
-    <h2>Submit a Complaint</h2>
-    <form id="complaint-form">
-      <label for="title">Complaint Title:</label>
-      <input type="text" id="title" required>
+    <!-- Mobile Header -->
+    <header class="mobile-header">
+      <div class="menu-icon" onclick="toggleNav()">☰</div>
+      <div class="nav-brand">UrbanFix</div>
+    </header>
 
-      <label for="description">Complaint Description:</label>
-      <textarea id="description" rows="4" required></textarea>
+    <!-- Nav Overlay -->
+    <div class="nav-overlay" id="navOverlay" onclick="toggleNav()"></div>
 
-      <button type="submit">Submit Complaint</button>
-    </form>
+    <!-- Main Content -->
+    <main class="main-content">
+      <div id="profile-section" class="profile-section">
+        <!-- Profile Header -->
+        <div class="profile-header">
+          <div class="profile-info">
+            <div class="profile-avatar" id="avatar"></div>
+            <div class="profile-details">
+              <h2 class="profile-name" id="name">Loading...</h2>
+              <p class="profile-email" id="email">Loading...</p>
+              <button id="edit-profile-btn" class="edit-profile-btn">Edit Profile</button>
+            </div>
+          </div>
+          <div class="profile-stats">
+            <div class="stat-item">
+              <div class="stat-value" id="total-complaints">0</div>
+              <div class="stat-label">Total Complaints</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value" id="total-upvotes">0</div>
+              <div class="stat-label">Total Upvotes</div>
+            </div>
+          </div>
+        </div>
 
-    <h2>Your Complaints</h2>
-    <div id="complaints-list">Loading complaints...</div>
-
-    <button id="logout-btn">Logout</button>
+        <!-- Complaints Section -->
+        <section class="complaints-section">
+          <div class="complaints-header">
+            <h2 class="complaints-title">My Complaints</h2>
+          </div>
+          <div id="complaints-list" class="complaints-grid">
+            <div class="loading-container">
+              <div class="loading-spinner"></div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
   </div>
 
-  <script>
-  const backendUrl = 'https://urbanfixbackend.vercel.app';
-  const token = localStorage.getItem('token');
-  const emailElement = document.getElementById('email');
-  const logoutButton = document.getElementById('logout-btn');
-  const complaintsList = document.getElementById('complaints-list');
-  const complaintForm = document.getElementById('complaint-form');
-
-  if (!token) {
-    window.location.href = 'login.html';
-  }
-
-  // Fetch profile information
-  fetch(`${backendUrl}/profile`, {
-    method: 'GET',
-    headers: { 'Authorization': token },
-  })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Session expired');
-      }
-      return response.json();
-    })
-    .then(data => {
-      if (data.email) {
-        emailElement.textContent = data.email;
-      } else {
-        throw new Error('Session expired');
-      }
-    })
-    .catch(() => window.location.href = 'login.html');
-
-  // Fetch complaints
-  const fetchComplaints = async () => {
-    try {
-      const response = await fetch(`${backendUrl}/complaints`, {
-        method: 'GET',
-        headers: { 'Authorization': token }
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to load complaints');
-      }
-
-      const data = await response.json();
-      complaintsList.innerHTML = data.complaints.length > 0 ? 
-        data.complaints.map(complaint => 
-          `<div class="complaints">
-            <strong>${complaint.title}</strong>
-            <p>${complaint.description}</p>
-          </div>`
-        ).join('') : 'No complaints found.';
-    } catch (error) {
-      complaintsList.innerHTML = 'Failed to load complaints.';
-    }
-  };
-
-  fetchComplaints();
-
-  // Handle complaint form submission
-  complaintForm.addEventListener('submit', async (event) => {
-    event.preventDefault();
-    const title = document.getElementById('title').value.trim();
-    const description = document.getElementById('description').value.trim();
-
-    if (!title || !description) {
-      alert('Title and description are required.');
-      return;
-    }
-
-    try {
-      const response = await fetch(`${backendUrl}/submit`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': token
-        },
-        body: JSON.stringify({ title, description })
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to submit complaint');
-      }
-      
-      // Clear form after submission
-      document.getElementById('title').value = '';
-      document.getElementById('description').value = '';
-
-      fetchComplaints(); // Reload complaints after successful submission
-    } catch (error) {
-      alert('Failed to submit complaint. Please try again.');
-    }
-  });
-
-  // Logout user
-  logoutButton.addEventListener('click', () => {
-    localStorage.removeItem('token');
-    window.location.href = 'login.html';
-  });
-</script>
+  <!-- Edit Profile Modal -->
+  <div id="edit-profile-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Edit Profile</h2>
+        <span class="close-modal" id="close-edit-profile">&times;</span>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="display-name">Display Name</label>
+          <input type="text" id="display-name" placeholder="Enter your display name">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="save-profile-btn" class="primary-btn">Save Changes</button>
+        <button id="cancel-profile-btn" class="secondary-btn">Cancel</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Make sure to use the correct script filename -->
+  <script src="/scripts/profile.js"></script>
 </body>
 </html>

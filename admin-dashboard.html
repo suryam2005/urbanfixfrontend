@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Complaint Management System</title>
+    <link rel="stylesheet" href="/styles/adstyles.css">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Login Page -->
+    <div id="login-container" class="glass-container">
+        <div class="login-card">
+            <div class="login-header">
+                <h1>Admin Login</h1>
+                <p>Complaint Management System</p>
+            </div>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <button type="submit" class="btn-primary">Login</button>
+            </form>
+            <div id="login-error" class="error-message"></div>
+        </div>
+    </div>
+
+    <!-- Dashboard Container -->
+    <div id="dashboard-container" class="hidden">
+        <!-- Sidebar -->
+        <aside class="sidebar glass-panel">
+            <div class="sidebar-header">
+                <h2>UrbanFix Admin Panel</h2>
+                <span class="tagline">Dashboard</span>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="#" class="nav-link active" data-page="overview"><i class="fas fa-home"></i> Overview</a></li>
+                    <li><a href="#" class="nav-link" data-page="complaints"><i class="fas fa-clipboard-list"></i> Complaints</a></li>
+                    <li><a href="#" class="nav-link" data-page="settings"><i class="fas fa-cog"></i> Settings</a></li>
+                    <li><a href="#" id="logout-btn" class="nav-link"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                </ul>
+            </nav>
+            <div class="sidebar-footer">
+                <p>© 2025 Complaint Management</p>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header with search and user info -->
+            <header class="dashboard-header glass-panel">
+                <div class="search-container">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="search-input" placeholder="Search complaints...">
+                </div>
+                <div class="user-info">
+                    <span id="admin-name">Admin User</span>
+                    <div class="avatar">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Overview Page -->
+            <div id="overview-page" class="dashboard-page">
+                <h1 class="page-title">Dashboard Overview</h1>
+                
+                <!-- Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card glass-panel">
+                        <div class="stat-icon blue">
+                            <i class="fas fa-clipboard-list"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>Total Complaints</h3>
+                            <p id="total-complaints">--</p>
+                        </div>
+                    </div>
+                    <div class="stat-card glass-panel">
+                        <div class="stat-icon amber">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>Pending</h3>
+                            <p id="pending-complaints">--</p>
+                        </div>
+                    </div>
+                    <div class="stat-card glass-panel">
+                        <div class="stat-icon green">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>Working</h3>
+                            <p id="working-complaints">--</p>
+                        </div>
+                    </div>
+                    <div class="stat-card glass-panel">
+                        <div class="stat-icon purple">
+                            <i class="fas fa-flag-checkered"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>Finished</h3>
+                            <p id="finished-complaints">--</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Recent Complaints -->
+                <div class="bento-grid">
+                    <div class="bento-card glass-panel wide">
+                        <h2 class="card-title">Recent Complaints</h2>
+                        <div class="table-wrapper">
+                            <table id="recent-complaints-table" class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Title</th>
+                                        <th>Status</th>
+                                        <th>Created</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Populated via JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <!-- Category Distribution -->
+                    <div class="bento-card glass-panel">
+                        <h2 class="card-title">Complaints by Category</h2>
+                        <div class="categories-chart" id="categories-chart">
+                            <!-- Populated via JavaScript -->
+                        </div>
+                    </div>
+                    
+                    <!-- Status Distribution -->
+                    <div class="bento-card glass-panel">
+                        <h2 class="card-title">Status Distribution</h2>
+                        <div class="status-chart" id="status-chart">
+                            <!-- Populated via JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Complaints Page -->
+            <div id="complaints-page" class="dashboard-page hidden">
+                <h1 class="page-title">All Complaints</h1>
+                
+                <!-- Filters -->
+                <div class="filters-container glass-panel">
+                    <div class="filter-group">
+                        <label for="status-filter">Status:</label>
+                        <select id="status-filter">
+                            <option value="">All</option>
+                            <option value="pending">Pending</option>
+                            <option value="working">Working</option>
+                            <option value="finished">Finished</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="tag-filter">Category:</label>
+                        <select id="tag-filter">
+                            <option value="">All</option>
+                            <option value="electricity">Electricity</option>
+                            <option value="canteen">Canteen</option>
+                            <option value="furniture">Furniture</option>
+                            <option value="campus">Campus</option>
+                        </select>
+                    </div>
+                    <button id="apply-filters" class="btn-primary">Apply Filters</button>
+                    <button id="clear-filters" class="btn-secondary">Clear</button>
+                </div>
+                
+                <!-- Complaints Table -->
+                <div class="table-container glass-panel">
+                    <div class="table-header">
+                        <h2>Complaints List</h2>
+                        <div class="table-actions">
+                            <span id="complaint-count">0 results</span>
+                        </div>
+                    </div>
+                    <div class="table-wrapper">
+                        <table id="complaints-table" class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Title</th>
+                                    <th>Description</th>
+                                    <th>Status</th>
+                                    <th>Tags</th>
+                                    <th>Created</th>
+                                    <th>Upvotes</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Populated via JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="pagination">
+                        <button id="prev-page" class="btn-icon"><i class="fas fa-chevron-left"></i></button>
+                        <span id="page-indicator">Page 1 of 1</span>
+                        <button id="next-page" class="btn-icon"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Settings Page -->
+            <div id="settings-page" class="dashboard-page hidden">
+                <h1 class="page-title">Settings</h1>
+                
+                <div class="settings-container">
+                    <div class="settings-card glass-panel">
+                        <h2 class="card-title">Account Settings</h2>
+                        <form id="account-form">
+                            <div class="form-group">
+                                <label for="display-name">Display Name</label>
+                                <input type="text" id="display-name" name="display-name">
+                            </div>
+                            <div class="form-group">
+                                <label for="email-settings">Email</label>
+                                <input type="email" id="email-settings" name="email" disabled>
+                            </div>
+                            <button type="submit" class="btn-primary">Save Changes</button>
+                        </form>
+                    </div>
+                    
+                    <div class="settings-card glass-panel">
+                        <h2 class="card-title">Password</h2>
+                        <form id="password-form">
+                            <div class="form-group">
+                                <label for="current-password">Current Password</label>
+                                <input type="password" id="current-password" name="current-password" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="new-password">New Password</label>
+                                <input type="password" id="new-password" name="new-password" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="confirm-password">Confirm New Password</label>
+                                <input type="password" id="confirm-password" name="confirm-password" required>
+                            </div>
+                            <button type="submit" class="btn-primary">Change Password</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Complaint Detail Modal -->
+            <div id="complaint-modal" class="modal">
+                <div class="modal-content glass-panel">
+                    <div class="modal-header">
+                        <h2 id="modal-title">Complaint Details</h2>
+                        <button class="close-btn"><i class="fas fa-times"></i></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="complaint-info">
+                            <div class="info-row">
+                                <span class="info-label">ID:</span>
+                                <span id="detail-id" class="info-value"></span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Title:</span>
+                                <span id="detail-title" class="info-value"></span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Description:</span>
+                                <p id="detail-description" class="info-value"></p>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Status:</span>
+                                <div class="status-selector">
+                                    <select id="detail-status">
+                                        <option value="pending">Pending</option>
+                                        <option value="working">Working</option>
+                                        <option value="finished">Finished</option>
+                                    </select>
+                                    <button id="update-status" class="btn-primary">Update</button>
+                                </div>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Tags:</span>
+                                <span id="detail-tags" class="info-value"></span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Created:</span>
+                                <span id="detail-created" class="info-value"></span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Upvotes:</span>
+                                <span id="detail-upvotes" class="info-value"></span>
+                            </div>
+                            <div class="info-row" id="image-container">
+                                <span class="info-label">Image:</span>
+                                <div class="image-preview">
+                                    <img id="detail-image" src="" alt="No image available">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Admin Comments Section -->
+                        <div class="comments-section">
+                            <h3>Admin Comments</h3>
+                            <div id="comments-list" class="comments-list">
+                                <!-- Populated via JavaScript -->
+                            </div>
+                            <div class="add-comment">
+                                <textarea id="comment-text" placeholder="Add a comment..."></textarea>
+                                <button id="add-comment" class="btn-primary">Add Comment</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="delete-complaint" class="btn-danger">Delete Complaint</button>
+                        <button class="close-modal btn-secondary">Close</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Confirmation Dialog -->
+            <div id="confirm-dialog" class="modal">
+                <div class="modal-content glass-panel small">
+                    <div class="modal-header">
+                        <h2 id="confirm-title">Confirm Action</h2>
+                    </div>
+                    <div class="modal-body">
+                        <p id="confirm-message">Are you sure you want to perform this action?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="confirm-yes" class="btn-danger">Yes</button>
+                        <button id="confirm-no" class="btn-secondary">No</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Toast Notification -->
+            <div id="toast" class="toast hidden">
+                <div class="toast-content">
+                    <i id="toast-icon" class="fas fa-check-circle"></i>
+                    <div class="toast-message" id="toast-message"></div>
+                </div>
+                <div class="toast-progress"></div>
+            </div>
+            
+            <script src="/scripts/adscript.js"></script>
+            </body>
+            </html>
+                
